@@ -49,13 +49,19 @@
             left: 40px;
             top: 40px;
      }
-        #score {
-       background-color: white;
+    #score {
+       background-color: lightgreen;
        height: 40px;
        font: 24;
-       font: bold;
-    } 
-      #ghosts {
+       font-weight: bold;
+    }
+    #lives {
+       background-color: lightgreen;
+       height: 40px;
+       font: 24;
+       font-weight: bold;
+    }
+       #pumpky {
 			background-color: black;
 			height: 40px;
 			width: 40px;
@@ -63,32 +69,71 @@
             background-image: url('pumpky.gif');
             background-size: contain;
             position: absolute;
-    }    
-
+            left: 120px;
+            top:  80px;
+    }
+			#bluey {
+      background-color: black;
+			height: 40px;
+			width: 40px;
+            display: inline-block;
+            background-image: url('bluey.gif');
+            background-size: contain;
+            position: absolute;
+            left: 40px;
+            top:  80px;
+    }
+			#pinky {
+      background-color: black;
+			height: 40px;
+			width: 40px;
+            display: inline-block;
+            background-image: url('pinky.gif');
+            background-size: contain;
+            position: absolute;
+            left: 80px;
+            top:  80px;
+    }
+			#red {
+      background-color: black;
+			height: 40px;
+			width: 40px;
+            display: inline-block;
+            background-image: url('red.gif');
+            background-size: contain;
+            position: absolute;
+            left: 0px;
+            top:  80px;
+    }
+}
 		</style>
 </head>
 <body>
-    <div id ='world'></div>
+    <div id='world'></div>
     <div id='ninjaman'></div>
     <div id='score'></div>
-    <div id='ghosts'></div>
+    <div id='lives'></div>
+    <div id='pumpky'></div>
+    <div id='bluey'></div>
+    <div id='pinky'></div>
+    <div id='red'></div>
     </body>
+
     <script type="text/javascript">
-        var world = [
-            [1,1,1,1,1,1,1,1,1],
-            [1,0,0,0,0,0,1,3,1],
-            [1,2,1,2,1,2,3,3,1],
-            [1,2,2,2,1,1,2,3,1],
-            [1,3,1,3,3,2,1,1,1],
-            [1,3,1,3,3,2,2,2,1],
-            [1,2,2,2,3,1,1,2,1],
-            [1,2,1,2,2,3,2,3,1],
-            [1,2,2,2,1,1,3,3,1],
-            [1,2,1,3,3,2,2,3,1],
-            [1,2,1,3,1,2,3,3,1],
-            [1,2,2,2,1,2,1,3,1],
-            [1,2,1,2,1,2,1,3,1],
-            [1,2,2,2,1,2,3,3,1],
+
+function random(max,min){
+  return Math.floor(Math.random()* (max-min +1))+min;
+}
+
+var world = [
+  [1,1,1,1,1,1,1,1,1],[1,0,random(-1,4),random(-1,4),random(-1,4),random(-1,4),random(-1,4),random(-1,4),1],
+            [1,random(-1,4),random(-1,4),random(-1,4),random(-1,4),random(-1,4),random(-1,4),random(-1,4),1],
+            [1,random(-1,4),random(-1,4),random(-1,4),random(-1,4),random(-1,4),random(-1,4),random(-1,4),1],
+            [1,random(-1,4),random(-1,4),random(-1,4),random(-1,4),random(-1,4),random(-1,4),random(-1,4),1],
+            [1,random(-1,4),random(-1,4),random(-1,4),random(-1,4),random(-1,4),random(-1,4),random(-1,4),1],
+            [1,random(-1,4),random(-1,4),random(-1,4),random(-1,4),random(-1,4),random(-1,4),random(-1,4),1],
+            [1,random(-1,4),random(-1,4),random(-1,4),random(-1,4),random(-1,4),random(-1,4),random(-1,4),1],
+            [1,random(-1,4),random(-1,4),random(-1,4),random(-1,4),random(-1,4),random(-1,4),random(-1,4),1],
             [1,1,1,1,1,1,1,1,1]
         ];
     var worldDict = {
@@ -97,87 +142,208 @@
         2: 'sushi',
         3:  'onigiri'
     }
-    var ghosts = {
-        y: 8,
-        x: 1
-    }
     var worldScore = 0;
+    var lives = 3;
+    var gameOver = false;
     var ninjaman = {
       y: 1,
       x: 1,
-      score: 0
+      score: 0,
+    }
+    var pumpky = {
+      y: 8,
+      x: 6,
+    }
+    var bluey = {
+       y: 3,
+       x: 7,
+    }
+    var pinky = {
+      y: 5,
+      x: 2,
+    }
+    var red = {
+      y: 4,
+      x: 6,
     }
     
     function drawWorld(){
         output = "";
 
         for(var row = 0; row < world.length; row++){
-            output += "<div class = 'row'<div>"
+            output += "<div class = 'row'<div>";
             for(x = 0; x<world[row].length; x++){
-                output += "<div class = '"+worldDict[world[row][x]]+"'></div>"
+                output += "<div class = '"+worldDict[world[row][x]]+"'></div>";
             }
-            output += "</div>"
+            output += "</div>";
         }
         document.getElementById('world').innerHTML =
             output;
         document.getElementById("score").style.width = world[0].length * 40 + "px";
-        document.getElementById("score").innerHTML = "Score:" + ninjaman.score;
+        document.getElementById("score").innerHTML = "Score: " + ninjaman.score;
 
+        document.getElementById('lives').innerHTML = "Lives: " + lives;
+        document.getElementById("lives").style.width = world[0].length * 40 + "px";
+        
 }
+
 drawWorld();
 
-
 function drawNinjaman(){
-    document.getElementById('ninjaman').style.top = ninjaman.y * 40 + 'px'
-    document.getElementById('ninjaman').style.left = ninjaman.x * 40 + 'px'
+    document.getElementById('ninjaman').style.top = ninjaman.y * 40 + 'px';
+    document.getElementById('ninjaman').style.left = ninjaman.x * 40 + 'px';
 }  
-drawNinjaman()
+drawNinjaman();
+
+function drawPumpky(){
+    document.getElementById('pumpky').style.top = pumpky.y * 40 + 'px';
+    document.getElementById('pumpky').style.left = pumpky.x * 40 + 'px';
+}  
+
+drawPumpky();
+
+function drawBluey(){
+    document.getElementById('bluey').style.top = bluey.y * 40 + 'px';
+    document.getElementById('bluey').style.left = bluey.x * 40 + 'px';
+}  
+
+drawBluey();
+
+function drawPinky(){
+    document.getElementById('pinky').style.top = pinky.y * 40 + 'px';
+    document.getElementById('pinky').style.left = pinky.x * 40 + 'px';
+}  
+
+drawPinky();
+
+function drawRed(){
+    document.getElementById('red').style.top = red.y * 40 + 'px';
+    document.getElementById('red').style.left = red.x * 40 + 'px';
+}  
+
+drawRed();
+
+
+function movePumpky(){
+
+  var move = random(-1,4);
+  if(move ===0 && (world[pumpky.y][pumpky.x-1] !=1)){
+    pumpky.x--;
+  }
+
+  else if(move ===1 && (world[pumpky.y][pumpky.x+1] !=1)){
+    pumpky.x++;
+  }
+
+  else if(move ===2 && (world[pumpky.y-1][pumpky.x] !=1)){
+    pumpky.y--;
+  }
+
+  else if(move ===3 && (world[pumpky.y+1][pumpky.x] !=1)){
+    pumpky.y++;
+  }
+}
+function moveBluey(){
+
+  var moves = random(-1,4);
+  if(moves ===0 && (world[bluey.y][bluey.x-1] !=1)){
+    bluey.x--;
+  }
+
+  else if(moves ===1 && (world[bluey.y][bluey.x+1] !=1)){
+    bluey.x++;
+  }
+
+  else if(moves ===2 && (world[bluey.y-1][bluey.x] !=1)){
+    bluey.y--;
+  }
+
+  else if(moves ===3 && (world[bluey.y+1][bluey.x] !=1)){
+    bluey.y++;
+  }
+}
+function movePinky(){
+
+  var moves = random(-1,4);
+  if(moves ===0 && (world[pinky.y][pinky.x-1] !=1)){
+    pinky.x--;
+  }
+
+  else if(moves ===1 && (world[pinky.y][pinky.x+1] !=1)){
+    pinky.x++;
+  }
+
+  else if(moves ===2 && (world[pinky.y-1][pinky.x] !=1)){
+    pinky.y--;
+  }
+
+  else if(moves ===3 && (world[pinky.y+1][pinky.x] !=1)){
+    pinky.y++;
+  }
+}
+function moveRed(){
+
+  var moves = random(-1,4);
+  if(moves ===0 && (world[red.y][red.x-1] !=1)){
+    red.x--;
+  }
+
+  else if(moves ===1 && (world[red.y][red.x+1] !=1)){
+    red.x++;
+  }
+
+  else if(moves ===2 && (world[red.y-1][red.x] !=1)){
+    red.y--;
+  }
+
+  else if(moves ===3 && (world[red.y+1][red.x] !=1)){
+    red.y++;
+  }
+}
 
 document.onkeydown = function(e){
     if(e.keyCode == 37){
-        if(world[ninjaman.y][ninjaman.x-1] !=1){
+      if(world[ninjaman.y][ninjaman.x-1] !=1){
         ninjaman.x--;
-        }
-        if(world[ninjaman.y][ninjaman.x] == 2){
-      ninjaman.score += 10;
       }
-    else if(world[ninjaman.y][ninjaman.x] == 3){
-      ninjaman.score += 5;
+      if(world[ninjaman.y][ninjaman.x] == 2){
+        ninjaman.score += 10;
+      }
+      else if(world[ninjaman.y][ninjaman.x] == 3){
+        ninjaman.score += 5;
       }
     }
     else if(e.keyCode == 39){
-        if(world[ninjaman.y][ninjaman.x+1] !=1){
+      if(world[ninjaman.y][ninjaman.x+1] !=1){
         ninjaman.x++;
-        }
-    if(world[ninjaman.y][ninjaman.x] == 2){
-      ninjaman.score += 10;
       }
-    else if(world[ninjaman.y][ninjaman.x] == 3){
-      ninjaman.score += 5;
+      if(world[ninjaman.y][ninjaman.x] == 2){
+        ninjaman.score += 10;
+      }
+      else if(world[ninjaman.y][ninjaman.x] == 3){
+        ninjaman.score += 5;
       }
     }
     else if(e.keyCode == 38){
-        if(world[ninjaman.y-1][ninjaman.x] !=1){
+      if(world[ninjaman.y-1][ninjaman.x] !=1){
         ninjaman.y--;
-        }
-        if(world[ninjaman.y][ninjaman.x] == 2){
-      ninjaman.score += 10;
       }
-    else if(world[ninjaman.y][ninjaman.x] == 3){
-      ninjaman.score += 5;
+      if(world[ninjaman.y][ninjaman.x] == 2){
+        ninjaman.score += 10;
+      }
+      else if(world[ninjaman.y][ninjaman.x] == 3){
+        ninjaman.score += 5;
       }
     }
     else if(e.keyCode == 40){
-        if(world[ninjaman.y+1][ninjaman.x] !=1){
+      if(world[ninjaman.y+1][ninjaman.x] !=1){
         ninjaman.y++;
-        }
-
-drawNinjaman()
-    if(world[ninjaman.y][ninjaman.x] == 2){
-      ninjaman.score += 10;
       }
-    else if(world[ninjaman.y][ninjaman.x] == 3){
-      ninjaman.score += 5;
+      if(world[ninjaman.y][ninjaman.x] == 2){
+        ninjaman.score += 10;
+      }
+      else if(world[ninjaman.y][ninjaman.x] == 3){
+        ninjaman.score += 5;
       }
     }
     world[ninjaman.y][ninjaman.x] = 0;
@@ -185,7 +351,57 @@ drawNinjaman()
     drawNinjaman();
 }
 
+function updateLives() {
+  if(ninjaman.y == pumpky.y && ninjaman.x == pumpky.x) {
+    lives--;
+  }
+  else if(ninjaman.y == pinky.y && ninjaman.x == pinky.x) {
+    lives--;
+  }
+  else if(ninjaman.y == bluey.y && ninjaman.x == bluey.x) {
+    lives--;
+  }
+  else if(ninjaman.y == red.y && ninjaman.x == red.x) {
+    lives--;
+  }
+  if(lives ==0) {
+   gameOver = true;
+  }
+
+}
+
+
+
+
+function gameLoop() { 
+  drawNinjaman();
+  drawPumpky();
+  drawBluey();
+  drawPinky();
+  drawRed(); 
+  movePumpky(); 
+  moveBluey();
+  movePinky();
+  moveRed();
+  drawPumpky();
+  drawBluey();
+  drawPinky();
+  drawRed();
+
+  updateLives();
+  if(gameOver == false) {
+  setTimeout(gameLoop,500);
+  }
+  else{
+    alert('GAMEOVER Score: ' +ninjaman.score);
+  }
+} 
+gameLoop();
+
+
 </script>
+
+
 </html>
 
 
